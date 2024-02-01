@@ -111,7 +111,7 @@ w_array = populate_array(6)
 b_array = populate_array(3)
 
 # Define learning rate
-learning_rate = 0.1
+learning_rate = 1
 
 x1_inputs = [0, 1, 0, 1]
 x2_inputs = [0, 0, 1, 1]
