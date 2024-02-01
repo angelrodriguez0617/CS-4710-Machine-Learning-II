@@ -3,7 +3,8 @@
 import random # Only for generating random integers
 import numpy as np
 
-acceptable_loss = 0.01
+multiplier = 2
+acceptable_loss = 0.1
 
 def populate_array(n):
     arr = []
@@ -73,8 +74,9 @@ def backprop(x1_array, x2_array, w, b, learning_rate):
         original_loss = calc_loss(x1_array, x2_array, w, b)
         if original_loss < acceptable_loss:
             break
-        while not isinstance(w[i], (int, float, complex)) or w[i] - orignal_variable == 0 or w[i] == 0:
-            w[i] = random.choice([-1, 1]) * random.randint(1, 10) # random.randrange(2,10)
+        # while not isinstance(w[i], (int, float, complex)) or w[i] - orignal_variable == 0 or w[i] == 0:
+        #     w[i] = random.choice([-1, 1]) * random.randint(1, 10) 
+        w[i] *= multiplier
         new_loss = calc_loss(x1_array, x2_array, w, b)
         if new_loss < acceptable_loss:
             break
@@ -90,8 +92,9 @@ def backprop(x1_array, x2_array, w, b, learning_rate):
         original_loss = calc_loss(x1_array, x2_array, w, b)
         if original_loss < acceptable_loss:
             break
-        while not isinstance(w[i], (int, float, complex)) or b[i] - orignal_variable == 0 or b[i] == 0:
-            b[i] = random.choice([-1, 1]) * random.randint(1, 10) # random.randrange(2,10)
+        # while not isinstance(w[i], (int, float, complex)) or b[i] - orignal_variable == 0 or b[i] == 0:
+            # b[i] = random.choice([-1, 1]) * random.randint(1, 10)
+        b[i] *= multiplier
         new_loss = calc_loss(x1_array, x2_array, w, b)
         if new_loss < acceptable_loss:
             break
