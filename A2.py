@@ -1,9 +1,8 @@
 # CS6480 Assignment #2
 # Code from scratch. Derive equations and implement the XOR(x1, x2), where x1 and x2 take values of {0, 1}.
 import random # Only for generating random integers
-import numpy as np
 
-multiplier = 2
+multiplier = 0.1
 acceptable_loss = 0.1
 
 def populate_array(n):
@@ -65,7 +64,7 @@ def calc_loss(x1_array, x2_array, w, b):
         print(f'Loss is at acceptable value of {loss}')
     return loss
    
-def backprop(x1_array, x2_array, w, b, learning_rate):
+def gradient_decent(x1_array, x2_array, w, b, learning_rate):
 
     # Update the values of w_array and b_array
     for i in range(len(w)):
@@ -129,9 +128,9 @@ if first_loss < acceptable_loss:
     print(f'Updated b_array: {b_array}')
     print(f'Final loss: {first_loss}')
 else:
-    # Perform backpropagation for 1000 iterations
+    # Perform gradient_decent for 1000 iterations
     for i in range(1000):
-        loss, w_array, b_array = backprop(x1_inputs, x2_inputs, w_array, b_array, learning_rate)
+        loss, w_array, b_array = gradient_decent(x1_inputs, x2_inputs, w_array, b_array, learning_rate)
         if loss < acceptable_loss:
             break
         losses.append(loss)
