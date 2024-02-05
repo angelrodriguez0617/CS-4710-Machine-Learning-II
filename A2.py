@@ -1,6 +1,7 @@
 # CS6480 Assignment #2
 # Code from scratch. Derive equations and implement the XOR(x1, x2), where x1 and x2 take values of {0, 1}.
 import random # Only for generating random integers
+import numpy as np # Only for printing
 
 multiplier = 0.1
 acceptable_loss = 0.1
@@ -72,13 +73,11 @@ def gradient_decent(x1_array, x2_array, w, b, learning_rate):
         orignal_variable = w[i]
         original_loss = calc_loss(x1_array, x2_array, w, b)
         if original_loss < acceptable_loss:
-            break
-        # while not isinstance(w[i], (int, float, complex)) or w[i] - orignal_variable == 0 or w[i] == 0:
-        #     w[i] = random.choice([-1, 1]) * random.randint(1, 10) 
+            return original_loss, w, b
         w[i] *= multiplier
         new_loss = calc_loss(x1_array, x2_array, w, b)
         if new_loss < acceptable_loss:
-            break
+            return new_loss, w, b
         loss_derivative = (new_loss - original_loss) / (w[i] - orignal_variable)
         # print(f'loss_derivative: {loss_derivative}')
         if loss_derivative == 0 or not isinstance(loss_derivative, (int, float, complex)) :
@@ -90,13 +89,11 @@ def gradient_decent(x1_array, x2_array, w, b, learning_rate):
         orignal_variable = b[i]
         original_loss = calc_loss(x1_array, x2_array, w, b)
         if original_loss < acceptable_loss:
-            break
-        # while not isinstance(w[i], (int, float, complex)) or b[i] - orignal_variable == 0 or b[i] == 0:
-            # b[i] = random.choice([-1, 1]) * random.randint(1, 10)
+            return original_loss, w, b
         b[i] *= multiplier
         new_loss = calc_loss(x1_array, x2_array, w, b)
         if new_loss < acceptable_loss:
-            break
+            return new_loss, w, b
         loss_derivative = (new_loss - original_loss) / (b[i] - orignal_variable)
         # print(f'loss_derivative: {loss_derivative}')
         if loss_derivative == 0 or not isinstance(loss_derivative, (int, float, complex)):
@@ -104,8 +101,8 @@ def gradient_decent(x1_array, x2_array, w, b, learning_rate):
         else:
             b[i] = orignal_variable - (learning_rate * loss_derivative)
 
-    final_loss = calc_loss(x1_array, x2_array, w, b)
-    return final_loss, w, b
+    next_loss = calc_loss(x1_array, x2_array, w, b)
+    return next_loss, w, b
 
 # Create a vector for weights
 w_array = populate_array(6)
@@ -113,7 +110,7 @@ w_array = populate_array(6)
 b_array = populate_array(3)
 
 # Define learning rate
-learning_rate = 1
+learning_rate = 10
 
 x1_inputs = [0, 1, 0, 1]
 x2_inputs = [0, 0, 1, 1]
@@ -121,29 +118,31 @@ x2_inputs = [0, 0, 1, 1]
 first_w = w_array.copy()
 first_b = b_array.copy()
 
-losses = []
+losses = {}
 first_loss = calc_loss(x1_inputs, x2_inputs, w_array, b_array)
-if first_loss < acceptable_loss:
-    print(f'Updated w_array: {w_array}')
-    print(f'Updated b_array: {b_array}')
-    print(f'Final loss: {first_loss}')
-else:
-    # Perform gradient_decent for 1000 iterations
-    for i in range(1000):
-        loss, w_array, b_array = gradient_decent(x1_inputs, x2_inputs, w_array, b_array, learning_rate)
-        if loss < acceptable_loss:
-            break
-        losses.append(loss)
+array_tuple = (tuple(w_array), tuple(b_array))
+losses[array_tuple] = first_loss
 
-    loss = min(losses)
+# Perform gradient_decent for 1000 iterations
+for i in range(1000):
+    loss, w_array, b_array = gradient_decent(x1_inputs, x2_inputs, w_array, b_array, learning_rate)
+    array_tuple = (tuple(w_array), tuple(b_array))
+    losses[array_tuple] = loss
+    if loss < acceptable_loss:
+        break
+    
+min_key = min(losses, key=losses.get)
+min_loss = losses[min_key]
 
-    print(f'Initial w_array: {first_w}')
-    print(f'Initial b_array: {first_b}')
-    print(f'Updated w_array: {w_array}')
-    print(f'Updated b_array: {b_array}')
-    print(f'Initial loss: {first_loss}')
-    print(f'Final loss: {loss}')
-    print(f'Error reduced by: {round(100 * (first_loss - loss) / first_loss)}%')
+print(f'Initial w_array: {first_w}')
+print(f'Initial b_array: {first_b}')
+# print(f'Updated w_array: {np.array(min_key[0])}')
+# print(f'Updated b_array: {np.array(min_key[1])}')
+print(f'Updated w_array: {np.array(min_key[0])}')
+print(f'Updated b_array: {np.array(min_key[1])}')
+print(f'Initial loss: {first_loss}')
+print(f'Final loss: {min_loss}')
+print(f'Loss reduced by: {round(100 * (first_loss - min_loss) / first_loss, 1)}%')
 
 
 
